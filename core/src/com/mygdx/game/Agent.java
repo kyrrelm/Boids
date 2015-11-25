@@ -15,7 +15,7 @@ import java.util.Vector;
 public class Agent extends Sprite{
 
     public static final float MAX_TURNING_ANGLE = 5;
-    public static final float MAX_SPEED = 5;
+    public static final float MAX_SPEED = 2;
 
     float turningAngle = 0;
     private Vector2 velocity;
@@ -28,19 +28,38 @@ public class Agent extends Sprite{
         this.setPosition(400, 400);
         velocity = new Vector2(1,0);
         this.setRotation(velocity.angle());
-
-        Vector2 a = new Vector2(0,-1);
-        Vector2 b = new Vector2(-1,0);
-        System.out.println(a.angle(b));
     }
 
     public void update(){
         velocity.nor();
         avoidWall();
         newDir = new Vector2(velocity.x, velocity.y);
-        avoidCollision(newDir);
+        interact(newDir);
+        alignment(newDir);
         moveRandom(newDir);
         enforceAgilityLimit(newDir);
+    }
+
+    private void interact(Vector2 newDir) {
+        for (Agent a: agents){
+            if (a.equals(this))
+                continue;
+                avoidCollision(newDir, a);
+
+        }
+    }
+
+    private void alignment(Vector2 newDir) {
+    }
+
+
+    private void avoidCollision(Vector2 newDir, Agent a) {
+        Vector2 avoidVector = new Vector2((this.getCenterX()-a.getCenterX()),this.getCenterY()-a.getCenterY());
+        if (avoidVector.len() < 30){
+            avoidVector.nor();
+            newDir.add(avoidVector);
+        }
+
     }
 
     private void enforceAgilityLimit(Vector2 newDir) {
@@ -51,18 +70,6 @@ public class Agent extends Sprite{
             newDir.setAngle(velocity.angle()-MAX_TURNING_ANGLE);
         }
         newDir.setLength(Math.min(MAX_SPEED,newDir.len()));
-    }
-
-    private void avoidCollision(Vector2 newDir) {
-        for (Agent a: agents){
-            if (a.equals(this))
-                continue;
-            Vector2 avoidVector = new Vector2((this.getCenterX()-a.getCenterX()),this.getCenterY()-a.getCenterY());
-            if (avoidVector.len() < 40){
-                avoidVector.nor();
-                newDir.add(avoidVector);
-            }
-        }
     }
 
     private void moveRandom(Vector2 newDir) {
