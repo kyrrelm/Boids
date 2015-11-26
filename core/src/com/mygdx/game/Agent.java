@@ -1,13 +1,11 @@
 package com.mygdx.game;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 
 import java.util.ArrayList;
-import java.util.Vector;
 
 /**
  * Created by Kyrre on 22/11/2015.
@@ -35,7 +33,6 @@ public class Agent extends Sprite{
         avoidWall();
         newDir = new Vector2(velocity.x, velocity.y);
         interact(newDir);
-        alignment(newDir);
         moveRandom(newDir);
         enforceAgilityLimit(newDir);
     }
@@ -44,12 +41,19 @@ public class Agent extends Sprite{
         for (Agent a: agents){
             if (a.equals(this))
                 continue;
-                avoidCollision(newDir, a);
+            avoidCollision(newDir, a);
+            alignment(newDir, a);
 
         }
     }
 
-    private void alignment(Vector2 newDir) {
+    private void alignment(Vector2 newDir, Agent a) {
+        Vector2 distVector = new Vector2((this.getCenterX()-a.getCenterX()),this.getCenterY()-a.getCenterY());
+        if (distVector.len() < 70){
+            Vector2 tmp = new Vector2(a.getVelocity().x, a.getVelocity().y);
+            tmp.setLength((float) 0.01);
+            newDir.add(tmp);
+        }
     }
 
 
@@ -112,5 +116,9 @@ public class Agent extends Sprite{
         velocity = newDir;
         this.setRotation(velocity.angle());
         this.setPosition(getX()+velocity.x, getY()+velocity.y);
+    }
+
+    public Vector2 getVelocity(){
+        return velocity;
     }
 }
