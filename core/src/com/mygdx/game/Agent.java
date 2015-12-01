@@ -12,6 +12,8 @@ import java.util.ArrayList;
  */
 public class Agent extends Sprite{
 
+    private static int id_enumerator = 1;
+
     public static final float MAX_TURNING_ANGLE = 5;
     public static final float MAX_SPEED = 2;
 
@@ -19,9 +21,11 @@ public class Agent extends Sprite{
     private Vector2 velocity;
     private ArrayList<Agent> agents;
     private Vector2 newDir;
+    private int id;
 
     public Agent(float x, float y, ArrayList<Agent> agents) {
         super(new Texture("arrow.png"));
+        this.id = id_enumerator++;
         this.agents = agents;
         this.setPosition(x, y);
         velocity = new Vector2(1,0);
@@ -32,48 +36,58 @@ public class Agent extends Sprite{
         velocity.nor();
         avoidWall();
         newDir = new Vector2(velocity.x, velocity.y);
-        interact(newDir);
-        //moveRandom(newDir);
+        if (!interact(newDir)){
+            moveRandom(newDir);
+        }
         enforceAgilityLimit(newDir);
     }
 
-    private void interact(Vector2 newDir) {
-        //Vector2 cohesionVector = new Vector2();
+    private boolean interact(Vector2 newDir) {
+        boolean moveRandom = false;
         for (Agent a: agents){
             if (a.equals(this))
                 continue;
-            avoidCollision(newDir, a);
-            alignment(newDir, a);
-            cohesion(newDir, a);
+            if (avoidCollision(newDir, a) || alignment(newDir, a) || cohesion(newDir, a)){
+                moveRandom = true;
+            }
         }
+        return moveRandom;
     }
 
-    private void cohesion(Vector2 newDir, Agent a){
+    private boolean cohesion(Vector2 newDir, Agent a){
         Vector2 distVector = new Vector2((a.getCenterX()-this.getCenterX()),a.getCenterY()-this.getCenterY());
+        boolean cohesion = false;
         float angleDif = velocity.angle(distVector);
         if (distVector.len() < 300 && angleDif > -90 && angleDif < 90){
             distVector.setLength((float) 0.003);
             newDir.add(distVector);
+            cohesion = true;
         }
+        return cohesion;
     }
 
-    private void alignment(Vector2 newDir, Agent a) {
+    private boolean alignment(Vector2 newDir, Agent a) {
         Vector2 distVector = new Vector2((this.getCenterX()-a.getCenterX()),this.getCenterY()-a.getCenterY());
+        boolean align = false;
         if (distVector.len() < 50){
             Vector2 tmp = new Vector2(a.getVelocity().x, a.getVelocity().y);
             tmp.setLength((float) 0.05);
             newDir.add(tmp);
+            //align = true;
         }
+        return align;
     }
 
 
-    private void avoidCollision(Vector2 newDir, Agent a) {
+    private boolean avoidCollision(Vector2 newDir, Agent a) {
         Vector2 avoidVector = new Vector2((this.getCenterX()-a.getCenterX()),this.getCenterY()-a.getCenterY());
+        boolean avoid = false;
         if (avoidVector.len() < 30){
             avoidVector.setLength(2);
             newDir.add(avoidVector);
+            avoid = true;
         }
-
+        return avoid;
     }
 
     private void enforceAgilityLimit(Vector2 newDir) {
@@ -87,6 +101,7 @@ public class Agent extends Sprite{
     }
 
     private void moveRandom(Vector2 newDir) {
+        System.out.println("Random: "+id);
         float change = (float) (Math.random()-0.5);
         if (turningAngle > 0){
             change += 0.49;
