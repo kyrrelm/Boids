@@ -2,18 +2,16 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 
 import java.util.ArrayList;
-import java.util.Vector;
 
 public class Swarm extends ApplicationAdapter implements InputProcessor{
 	SpriteBatch batch;
@@ -71,16 +69,50 @@ public class Swarm extends ApplicationAdapter implements InputProcessor{
 
 	}
 
-
+	Vector3 tp = new Vector3();
+	boolean rightButtonHold;
 	@Override
 	public boolean mouseMoved(int screenX, int screenY) {
-		System.out.println("x: "+screenX+" y: "+screenY);
+		if (rightButtonHold){
+			System.out.println("x: "+screenX+" y: "+screenY);
+		}
+		return false;
+	}
+
+	@Override
+	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+		if (button != Input.Buttons.RIGHT) return false;
+		cam.unproject(tp.set(screenX, screenY, 0));
+		oldMouseX = tp.x;
+		oldMouseY = tp.y;
+		rightButtonHold = true;
+		return true;
+	}
+
+	@Override
+	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+		rightButtonHold = false;
+		return false;
+	}
+
+	float oldMouseX = 0;
+	float oldMouseY = 0;
+	@Override
+	public boolean touchDragged(int screenX, int screenY, int pointer) {
+		if (rightButtonHold){
+			cam.unproject(tp.set(screenX, screenY, 0));
+			System.out.println("tp x: "+(oldMouseX-tp.x));
+			System.out.println("tp y: "+(oldMouseY-tp.y));
+			cam.translate(oldMouseX-tp.x, oldMouseY-tp.y, 0);
+			oldMouseX = tp.x;
+			oldMouseY = tp.y;
+		}
 		return false;
 	}
 
 	@Override
 	public boolean scrolled(int amount) {
-		cam.zoom += (float)amount/20;
+		cam.zoom += (float)amount/5;
 		System.out.println("Cam zoom: "+cam.zoom);
 		return false;
 	}
@@ -97,22 +129,6 @@ public class Swarm extends ApplicationAdapter implements InputProcessor{
 
 	@Override
 	public boolean keyTyped(char character) {
-		return false;
-	}
-
-	@Override
-	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-		System.out.println("mouse click");
-		return false;
-	}
-
-	@Override
-	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-		return false;
-	}
-
-	@Override
-	public boolean touchDragged(int screenX, int screenY, int pointer) {
 		return false;
 	}
 }
