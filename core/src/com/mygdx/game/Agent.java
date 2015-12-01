@@ -114,7 +114,7 @@ public class Agent extends Sprite{
     }
 
     private void avoidWall() {
-        float boarderSize = 70;
+        float boarderSize = 150;
         if (getCenterX()<boarderSize){
             velocity.x += (boarderSize-getCenterX())/500;
         }
