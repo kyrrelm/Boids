@@ -118,14 +118,14 @@ public class Agent extends Sprite{
         if (getCenterX()<boarderSize){
             velocity.x += (boarderSize-getCenterX())/500;
         }
-        if(getCenterX()>Gdx.graphics.getWidth()-boarderSize){
-            velocity.x -= (boarderSize-(Gdx.graphics.getWidth()-getCenterX()))/500;
+        if(getCenterX()>Swarm.WIDTH-boarderSize){
+            velocity.x -= (boarderSize-(Swarm.WIDTH-getCenterX()))/500;
         }
         if (getCenterY()<boarderSize){
             velocity.y += (boarderSize-getCenterY())/500;
         }
-        if(getCenterY()>Gdx.graphics.getHeight()-boarderSize){
-            velocity.y -= (boarderSize-(Gdx.graphics.getHeight()-getCenterY()))/500;
+        if(getCenterY()>Swarm.HEIGHT-boarderSize){
+            velocity.y -= (boarderSize-(Swarm.WIDTH-getCenterY()))/500;
         }
     }
 

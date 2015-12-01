@@ -18,6 +18,8 @@ public class Swarm extends ApplicationAdapter implements InputProcessor{
 	SpriteBatch batch;
 	ArrayList<Agent> agents;
 	OrthographicCamera cam;
+	static final int WIDTH = 2000;
+	static final int HEIGHT = 2000;
 	
 	@Override
 	public void create () {
@@ -66,6 +68,8 @@ public class Swarm extends ApplicationAdapter implements InputProcessor{
 
 	@Override
 	public boolean scrolled(int amount) {
+		cam.zoom += (float)amount/20;
+		System.out.println("Cam zoom: "+cam.zoom);
 		return false;
 	}
 
