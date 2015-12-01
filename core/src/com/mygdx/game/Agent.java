@@ -101,7 +101,6 @@ public class Agent extends Sprite{
     }
 
     private void moveRandom(Vector2 newDir) {
-        System.out.println("Random: "+id);
         float change = (float) (Math.random()-0.5);
         if (turningAngle > 0){
             change += 0.49;
