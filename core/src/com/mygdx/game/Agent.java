@@ -20,10 +20,10 @@ public class Agent extends Sprite{
     private ArrayList<Agent> agents;
     private Vector2 newDir;
 
-    public Agent(ArrayList<Agent> agents) {
+    public Agent(float x, float y, ArrayList<Agent> agents) {
         super(new Texture("arrow.png"));
         this.agents = agents;
-        this.setPosition(400, 400);
+        this.setPosition(x, y);
         velocity = new Vector2(1,0);
         this.setRotation(velocity.angle());
     }
@@ -33,25 +33,35 @@ public class Agent extends Sprite{
         avoidWall();
         newDir = new Vector2(velocity.x, velocity.y);
         interact(newDir);
-        moveRandom(newDir);
+        //moveRandom(newDir);
         enforceAgilityLimit(newDir);
     }
 
     private void interact(Vector2 newDir) {
+        //Vector2 cohesionVector = new Vector2();
         for (Agent a: agents){
             if (a.equals(this))
                 continue;
             avoidCollision(newDir, a);
             alignment(newDir, a);
+            cohesion(newDir, a);
+        }
+    }
 
+    private void cohesion(Vector2 newDir, Agent a){
+        Vector2 distVector = new Vector2((a.getCenterX()-this.getCenterX()),a.getCenterY()-this.getCenterY());
+        float angleDif = velocity.angle(distVector);
+        if (distVector.len() < 300 && angleDif > -90 && angleDif < 90){
+            distVector.setLength((float) 0.003);
+            newDir.add(distVector);
         }
     }
 
     private void alignment(Vector2 newDir, Agent a) {
         Vector2 distVector = new Vector2((this.getCenterX()-a.getCenterX()),this.getCenterY()-a.getCenterY());
-        if (distVector.len() < 70){
+        if (distVector.len() < 50){
             Vector2 tmp = new Vector2(a.getVelocity().x, a.getVelocity().y);
-            tmp.setLength((float) 0.01);
+            tmp.setLength((float) 0.05);
             newDir.add(tmp);
         }
     }
@@ -60,7 +70,7 @@ public class Agent extends Sprite{
     private void avoidCollision(Vector2 newDir, Agent a) {
         Vector2 avoidVector = new Vector2((this.getCenterX()-a.getCenterX()),this.getCenterY()-a.getCenterY());
         if (avoidVector.len() < 30){
-            avoidVector.nor();
+            avoidVector.setLength(2);
             newDir.add(avoidVector);
         }
 

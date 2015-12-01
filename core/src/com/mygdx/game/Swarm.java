@@ -21,8 +21,8 @@ public class Swarm extends ApplicationAdapter {
 	public void create () {
 		batch = new SpriteBatch();
 		agents = new ArrayList<Agent>();
-		for (int i = 0; i < 400; i++) {
-			agents.add(new Agent(agents));
+		for (int i = 0; i < 20; i++) {
+			agents.add(new Agent(400, 400+i, agents));
 		}
 		img = new Texture("badlogic.jpg");
 
