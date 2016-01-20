@@ -13,7 +13,7 @@ import java.util.ArrayList;
 public class Agent extends Sprite{
 
     private static int id_enumerator = 1;
-    
+
     public static final float MAX_TURNING_ANGLE = 5;
     public static final float MAX_SPEED = 2;
 
@@ -30,6 +30,7 @@ public class Agent extends Sprite{
         this.setPosition(x, y);
         velocity = new Vector2(1,0);
         this.setRotation(velocity.angle());
+        newDir = new Vector2();
     }
 
     public void update(){
@@ -42,6 +43,7 @@ public class Agent extends Sprite{
         enforceAgilityLimit(newDir);
     }
 
+    //TODO: kan flytte moveRandom inn hit
     private boolean interact(Vector2 newDir) {
         boolean moveRandom = false;
         for (Agent a: agents){
@@ -78,7 +80,6 @@ public class Agent extends Sprite{
         return align;
     }
 
-
     private boolean avoidCollision(Vector2 newDir, Agent a) {
         Vector2 avoidVector = new Vector2((this.getCenterX()-a.getCenterX()),this.getCenterY()-a.getCenterY());
         boolean avoid = false;
@@ -114,18 +115,22 @@ public class Agent extends Sprite{
     }
 
     private void avoidWall() {
-        float boarderSize = 150;
-        if (getCenterX()<boarderSize){
-            velocity.x += (boarderSize-getCenterX())/500;
+        if (getCenterX()<0){
+            //velocity.x += (boarderSize-getCenterX())/500;
+            this.setPosition(Swarm.WIDTH-20, getY());
         }
-        if(getCenterX()>Swarm.WIDTH-boarderSize){
-            velocity.x -= (boarderSize-(Swarm.WIDTH-getCenterX()))/500;
+        if(getCenterX()>Swarm.WIDTH){
+            //velocity.x -= (boarderSize-(Swarm.WIDTH-getCenterX()))/500;
+            this.setPosition(-10, getY());
         }
-        if (getCenterY()<boarderSize){
-            velocity.y += (boarderSize-getCenterY())/500;
+        if (getCenterY()<0){
+            //velocity.y += (boarderSize-getCenterY())/500;
+            this.setPosition(getX(), Swarm.HEIGHT-20);
         }
-        if(getCenterY()>Swarm.HEIGHT-boarderSize){
-            velocity.y -= (boarderSize-(Swarm.HEIGHT-getCenterY()))/500;
+        if(getCenterY()>Swarm.HEIGHT){
+            //velocity.y -= (boarderSize-(Swarm.HEIGHT-getCenterY()))/500;
+            this.setPosition(getX(), -10);
+
         }
     }
 
