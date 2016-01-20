@@ -17,8 +17,8 @@ public class Swarm extends ApplicationAdapter implements InputProcessor{
 	SpriteBatch batch;
 	ArrayList<Agent> agents;
 	OrthographicCamera cam;
-	static final int WIDTH = 3000;
-	static final int HEIGHT = 3000;
+	static final int WIDTH = 2000;
+	static final int HEIGHT = 1000;
 	ShapeRenderer shapeRenderer;
 	
 	@Override
@@ -32,7 +32,7 @@ public class Swarm extends ApplicationAdapter implements InputProcessor{
 		batch = new SpriteBatch();
 		agents = new ArrayList<Agent>();
 		for (int i = 0; i < 500; i++) {
-			agents.add(new Agent(1500, 1500+i, agents));
+			agents.add(new Agent(500, 200+i, agents));
 		}
 		Gdx.input.setInputProcessor(this);
 	}
@@ -49,10 +49,10 @@ public class Swarm extends ApplicationAdapter implements InputProcessor{
 		shapeRenderer.setProjectionMatrix(cam.combined);
 		shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
 		shapeRenderer.setColor(Color.BROWN);
-		shapeRenderer.line(0,0,HEIGHT,0);
-		shapeRenderer.line(0,0,0,WIDTH);
-		shapeRenderer.line(HEIGHT,0,HEIGHT,WIDTH);
-		shapeRenderer.line(0,WIDTH,HEIGHT,WIDTH);
+		shapeRenderer.line(0,0,WIDTH,0);
+		shapeRenderer.line(0,0,0,HEIGHT);
+		shapeRenderer.line(WIDTH,0,WIDTH,HEIGHT);
+		shapeRenderer.line(0,HEIGHT,WIDTH,HEIGHT);
 		shapeRenderer.end();
 
 		batch.begin();
