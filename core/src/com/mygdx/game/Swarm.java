@@ -7,19 +7,28 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 
 import java.util.ArrayList;
 
 public class Swarm extends ApplicationAdapter implements InputProcessor{
 	SpriteBatch batch;
+	SpriteBatch hudBatch;
 	ArrayList<Agent> agents;
 	OrthographicCamera cam;
 	static final int WIDTH = 500;
 	static final int HEIGHT = 500;
 	ShapeRenderer shapeRenderer;
+	Button testHud;
 	
 	@Override
 	public void create () {
@@ -30,11 +39,19 @@ public class Swarm extends ApplicationAdapter implements InputProcessor{
 		cam.update();
 		shapeRenderer = new ShapeRenderer();
 		batch = new SpriteBatch();
+		hudBatch = new SpriteBatch();
 		agents = new ArrayList<Agent>();
 		for (int i = 0; i < 10; i++) {
 			agents.add(new Agent(300, 300+i, agents));
 		}
 		Gdx.input.setInputProcessor(this);
+		testHud = new Button(new TextureRegionDrawable(new TextureRegion(new Texture("arrow.png"))));
+		testHud.addListener(new ClickListener() {
+			public void clicked(InputEvent event, float x, float y) {
+				System.out.println("Test");
+			}
+		});
+		testHud.setPosition(10,10);
 	}
 
 	@Override
@@ -67,6 +84,10 @@ public class Swarm extends ApplicationAdapter implements InputProcessor{
 
 		batch.end();
 
+		hudBatch.begin();
+		testHud.draw(hudBatch, 1F);
+		hudBatch.end();
+
 	}
 
 	Vector3 tp = new Vector3();
@@ -81,7 +102,7 @@ public class Swarm extends ApplicationAdapter implements InputProcessor{
 
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-		if (button != Input.Buttons.RIGHT) return false;
+		if (button == Input.Buttons.RIGHT) return false;
 		cam.unproject(tp.set(screenX, screenY, 0));
 		oldMouseX = tp.x;
 		oldMouseY = tp.y;
