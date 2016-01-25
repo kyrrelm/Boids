@@ -28,8 +28,8 @@ public class Swarm extends ApplicationAdapter implements InputProcessor{
 	ArrayList<Agent> agents;
 	ArrayList<Obstacle> obstacles = new ArrayList<Obstacle>();
 	OrthographicCamera cam;
-	static final int WIDTH = 500;
-	static final int HEIGHT = 500;
+	static final int WIDTH = 2000;
+	static final int HEIGHT = 2000;
 	ShapeRenderer shapeRenderer;
 	Sprite testHud;
 	
@@ -45,7 +45,7 @@ public class Swarm extends ApplicationAdapter implements InputProcessor{
 		hudBatch = new SpriteBatch();
 		agents = new ArrayList<Agent>();
 		for (int i = 0; i < 10; i++) {
-			agents.add(new Agent(300, 300+i, agents));
+			//agents.add(new Agent(300, 300+i, agents, obstacles));
 		}
 		Gdx.input.setInputProcessor(this);
 		testHud = new Sprite(new Texture("arrow.png"));
@@ -128,7 +128,7 @@ public class Swarm extends ApplicationAdapter implements InputProcessor{
 			}
 			switch (selectedButton){
 				case PREY:{
-					agents.add(new Agent(tp2.x, tp2.y, agents));
+					agents.add(new Agent(tp2.x, tp2.y, agents, obstacles));
 					return true;
 				}
 				case OBSTACLE:{
