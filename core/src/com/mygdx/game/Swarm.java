@@ -12,11 +12,13 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.sun.org.apache.xpath.internal.SourceTree;
 
 import java.util.ArrayList;
 
@@ -28,7 +30,7 @@ public class Swarm extends ApplicationAdapter implements InputProcessor{
 	static final int WIDTH = 500;
 	static final int HEIGHT = 500;
 	ShapeRenderer shapeRenderer;
-	Button testHud;
+	Sprite testHud;
 	
 	@Override
 	public void create () {
@@ -45,12 +47,7 @@ public class Swarm extends ApplicationAdapter implements InputProcessor{
 			agents.add(new Agent(300, 300+i, agents));
 		}
 		Gdx.input.setInputProcessor(this);
-		testHud = new Button(new TextureRegionDrawable(new TextureRegion(new Texture("arrow.png"))));
-		testHud.addListener(new ClickListener() {
-			public void clicked(InputEvent event, float x, float y) {
-				System.out.println("Test");
-			}
-		});
+		testHud = new Sprite(new Texture("arrow.png"));
 		testHud.setPosition(10,10);
 	}
 
@@ -100,14 +97,42 @@ public class Swarm extends ApplicationAdapter implements InputProcessor{
 		return false;
 	}
 
+	private enum ButtonType {
+		PREY
+	}
+
+	private ButtonType selectedButton = ButtonType.PREY;
+
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-		if (button == Input.Buttons.RIGHT) return false;
-		cam.unproject(tp.set(screenX, screenY, 0));
-		oldMouseX = tp.x;
-		oldMouseY = tp.y;
-		rightButtonHold = true;
-		return true;
+		if (button == Input.Buttons.LEFT){
+			System.out.println("X: "+screenX);
+			System.out.println("Y: "+screenY);
+			Vector3 tp2 = new Vector3();
+			cam.unproject(tp2.set(screenX, screenY, 0));
+			System.out.println("TP X:" + tp2.x);
+			System.out.println("TP Y:" + tp2.y);
+			System.out.println("Button X:" + testHud.getX());
+			System.out.println("Button Y:" + testHud.getY());
+			if(testHud.getBoundingRectangle().contains(screenX, Gdx.graphics.getHeight()-screenY)) {
+				selectedButton = ButtonType.PREY;
+				return true;
+			}
+			switch (selectedButton){
+				case PREY:{
+					agents.add(new Agent(tp2.x, tp2.y, agents));
+					return true;
+				}
+			}
+		}
+		if (button == Input.Buttons.RIGHT){
+			cam.unproject(tp.set(screenX, screenY, 0));
+			oldMouseX = tp.x;
+			oldMouseY = tp.y;
+			rightButtonHold = true;
+			return true;
+		}
+		return false;
 	}
 
 	@Override
