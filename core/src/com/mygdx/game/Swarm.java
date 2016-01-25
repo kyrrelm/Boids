@@ -10,15 +10,8 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.sun.org.apache.xpath.internal.SourceTree;
 
 import java.util.ArrayList;
 
@@ -31,8 +24,10 @@ public class Swarm extends ApplicationAdapter implements InputProcessor{
 	static final int WIDTH = 2000;
 	static final int HEIGHT = 2000;
 	ShapeRenderer shapeRenderer;
-	Sprite testHud;
-	
+	Sprite preyButton;
+	Sprite obstacleButton;
+	Sprite clearObstacleButton;
+
 	@Override
 	public void create () {
 		float w = Gdx.graphics.getWidth();
@@ -48,8 +43,12 @@ public class Swarm extends ApplicationAdapter implements InputProcessor{
 			//agents.add(new Agent(300, 300+i, agents, obstacles));
 		}
 		Gdx.input.setInputProcessor(this);
-		testHud = new Sprite(new Texture("arrow.png"));
-		testHud.setPosition(10,10);
+		preyButton = new Sprite(new Texture("arrow.png"));
+		preyButton.setPosition(10,10);
+		obstacleButton = new Sprite(new Texture("arrow.png"));
+		obstacleButton.setPosition(50,10);
+		clearObstacleButton = new Sprite(new Texture("arrow.png"));
+		clearObstacleButton.setPosition(90,10);
 	}
 
 	@Override
@@ -90,7 +89,9 @@ public class Swarm extends ApplicationAdapter implements InputProcessor{
 		batch.end();
 
 		hudBatch.begin();
-		testHud.draw(hudBatch, 1F);
+		preyButton.draw(hudBatch, 1F);
+		obstacleButton.draw(hudBatch, 1F);
+		clearObstacleButton.draw(hudBatch, 1F);
 		hudBatch.end();
 
 	}
@@ -120,10 +121,18 @@ public class Swarm extends ApplicationAdapter implements InputProcessor{
 			cam.unproject(tp2.set(screenX, screenY, 0));
 			System.out.println("TP X:" + tp2.x);
 			System.out.println("TP Y:" + tp2.y);
-			System.out.println("Button X:" + testHud.getX());
-			System.out.println("Button Y:" + testHud.getY());
-			if(testHud.getBoundingRectangle().contains(screenX, Gdx.graphics.getHeight()-screenY)) {
+			System.out.println("Button X:" + preyButton.getX());
+			System.out.println("Button Y:" + preyButton.getY());
+			if(preyButton.getBoundingRectangle().contains(screenX, Gdx.graphics.getHeight()-screenY)) {
 				selectedButton = ButtonType.PREY;
+				return true;
+			}
+			if(obstacleButton.getBoundingRectangle().contains(screenX, Gdx.graphics.getHeight()-screenY)) {
+				selectedButton = ButtonType.OBSTACLE;
+				return true;
+			}
+			if(clearObstacleButton.getBoundingRectangle().contains(screenX, Gdx.graphics.getHeight()-screenY)) {
+				obstacles.clear();
 				return true;
 			}
 			switch (selectedButton){
@@ -133,6 +142,7 @@ public class Swarm extends ApplicationAdapter implements InputProcessor{
 				}
 				case OBSTACLE:{
 					obstacles.add(new Obstacle(tp2.x, tp2.y, (float)(10+(30*Math.random()))));
+					return true;
 				}
 			}
 		}
