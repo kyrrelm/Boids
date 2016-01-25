@@ -25,6 +25,7 @@ public class Swarm extends ApplicationAdapter implements InputProcessor{
 	static final int HEIGHT = 2000;
 	ShapeRenderer shapeRenderer;
 	Sprite preyButton;
+	Sprite clearAgentButton;
 	Sprite obstacleButton;
 	Sprite clearObstacleButton;
 
@@ -45,10 +46,12 @@ public class Swarm extends ApplicationAdapter implements InputProcessor{
 		Gdx.input.setInputProcessor(this);
 		preyButton = new Sprite(new Texture("arrow.png"));
 		preyButton.setPosition(10,10);
+		clearAgentButton = new Sprite(new Texture("arrow.png"));
+		clearAgentButton.setPosition(50,10);
 		obstacleButton = new Sprite(new Texture("arrow.png"));
-		obstacleButton.setPosition(50,10);
+		obstacleButton.setPosition(90,10);
 		clearObstacleButton = new Sprite(new Texture("arrow.png"));
-		clearObstacleButton.setPosition(90,10);
+		clearObstacleButton.setPosition(130,10);
 	}
 
 	@Override
@@ -90,6 +93,7 @@ public class Swarm extends ApplicationAdapter implements InputProcessor{
 
 		hudBatch.begin();
 		preyButton.draw(hudBatch, 1F);
+		clearAgentButton.draw(hudBatch, 1F);
 		obstacleButton.draw(hudBatch, 1F);
 		clearObstacleButton.draw(hudBatch, 1F);
 		hudBatch.end();
@@ -125,6 +129,10 @@ public class Swarm extends ApplicationAdapter implements InputProcessor{
 			System.out.println("Button Y:" + preyButton.getY());
 			if(preyButton.getBoundingRectangle().contains(screenX, Gdx.graphics.getHeight()-screenY)) {
 				selectedButton = ButtonType.PREY;
+				return true;
+			}
+			if(clearAgentButton.getBoundingRectangle().contains(screenX, Gdx.graphics.getHeight()-screenY)) {
+				agents.clear();
 				return true;
 			}
 			if(obstacleButton.getBoundingRectangle().contains(screenX, Gdx.graphics.getHeight()-screenY)) {
