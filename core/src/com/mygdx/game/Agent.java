@@ -50,9 +50,9 @@ public class Agent extends Sprite{
     private void avoidObstacles(Vector2 newDir) {
         for (Obstacle o: obstacles){
             Vector2 avoidVector = new Vector2((this.getCenterX()-o.getX()),this.getCenterY()-o.getY());
-            float length = (float) ((o.getRadius()+40)-avoidVector.len());
+            float length = (float) ((o.getRadius()+50)-avoidVector.len());
             if (length > 0){
-                avoidVector.setLength(length/100);
+                avoidVector.setLength((float) (Math.pow(length,2)/400));
                 newDir.add(avoidVector);
             }
         }
