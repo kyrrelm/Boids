@@ -132,7 +132,7 @@ public class Swarm extends ApplicationAdapter implements InputProcessor{
 					return true;
 				}
 				case OBSTACLE:{
-					obstacles.add(new Obstacle(tp2.x, tp2.y, 10));
+					obstacles.add(new Obstacle(tp2.x, tp2.y, (float)(10+(30*Math.random()))));
 				}
 			}
 		}
