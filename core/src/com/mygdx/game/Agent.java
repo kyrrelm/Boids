@@ -24,6 +24,7 @@ public class Agent extends Sprite{
     private int id;
 
     public Agent(float x, float y, ArrayList<Agent> agents) {
+        //TODO: spawn in random direction.
         super(new Texture("arrow.png"));
         this.id = id_enumerator++;
         this.agents = agents;

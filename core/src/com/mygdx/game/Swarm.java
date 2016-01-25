@@ -26,6 +26,7 @@ public class Swarm extends ApplicationAdapter implements InputProcessor{
 	SpriteBatch batch;
 	SpriteBatch hudBatch;
 	ArrayList<Agent> agents;
+	ArrayList<Obstacle> obstacles = new ArrayList<Obstacle>();
 	OrthographicCamera cam;
 	static final int WIDTH = 500;
 	static final int HEIGHT = 500;
@@ -69,6 +70,13 @@ public class Swarm extends ApplicationAdapter implements InputProcessor{
 		shapeRenderer.line(0,HEIGHT,WIDTH,HEIGHT);
 		shapeRenderer.end();
 
+		shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+		shapeRenderer.setColor(Color.BLACK);
+		for (Obstacle o: obstacles) {
+			shapeRenderer.circle(o.getX(),o.getY(),o.getRadius());
+		}
+		shapeRenderer.end();
+
 		batch.begin();
 
 		for (Agent a: agents){
@@ -98,10 +106,10 @@ public class Swarm extends ApplicationAdapter implements InputProcessor{
 	}
 
 	private enum ButtonType {
-		PREY
+		PREY, OBSTACLE
 	}
 
-	private ButtonType selectedButton = ButtonType.PREY;
+	private ButtonType selectedButton = ButtonType.OBSTACLE;
 
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
@@ -122,6 +130,9 @@ public class Swarm extends ApplicationAdapter implements InputProcessor{
 				case PREY:{
 					agents.add(new Agent(tp2.x, tp2.y, agents));
 					return true;
+				}
+				case OBSTACLE:{
+					obstacles.add(new Obstacle(tp2.x, tp2.y, 10));
 				}
 			}
 		}
