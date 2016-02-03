@@ -15,6 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
+import javafx.scene.control.Tab;
 
 import java.util.ArrayList;
 
@@ -79,22 +80,37 @@ public class Swarm extends ApplicationAdapter{
 		Table table = new Table();
 		table.setFillParent(true);
 		stage.addActor(table);
+		table.left().bottom();
 
+		Table row1 = new Table();
 		// Create a button with the "default" TextButtonStyle. A 3rd parameter can be used to specify a name other than "default".
-		final Label separationLabel = new Label("Separation", skin);
-		table.add(separationLabel);
-		final Slider separationSlider = new Slider(0, 500, 5, false, skin);
-		table.add(separationSlider).padRight(5);
 		final TextButton preyButton = new TextButton(" Prey ", skin);
-		table.add(preyButton);
-		final TextButton removePreyButton = new TextButton(" Remove agents ", skin);
-		table.add(removePreyButton);
+		//table.add(preyButton);
+		row1.add(preyButton);
+		final TextButton removeAgentsButton = new TextButton(" Remove agents ", skin);
+		//.add(removeAgentsButton);
+		row1.add(removeAgentsButton);
 		final TextButton obstacleButton = new TextButton(" Obstacle ", skin);
-		table.add(obstacleButton);
+		//table.add(obstacleButton);
+		row1.add(obstacleButton);
 		final TextButton removeObstacleButton = new TextButton(" Remove obstacle ", skin);
-		table.add(removeObstacleButton);
-		table.right().bottom();
+		row1.add(removeObstacleButton);
+		table.add(row1).left().row();
 
+		Table row2 = new Table();
+		final Label separationLabel = new Label("Separation", skin);
+		row2.add(separationLabel);
+		final Slider separationSlider = new Slider(0, 500, 5, false, skin);
+		row2.add(separationSlider).padRight(5);
+		final Label alignmentLabel = new Label("Alignment", skin);
+		row2.add(alignmentLabel);
+		final Slider alignmentSlider = new Slider(0, 500, 5, false, skin);
+		row2.add(alignmentSlider).padRight(5);
+		final Label cohesionLabel = new Label("Separation", skin);
+		row2.add(cohesionLabel);
+		final Slider cohesionSlider = new Slider(0, 500, 5, false, skin);
+		row2.add(cohesionSlider).padRight(5);
+		table.add(row2);
 
 
 		preyButton.addListener(new ChangeListener() {
@@ -102,7 +118,7 @@ public class Swarm extends ApplicationAdapter{
 				selectedButton = ButtonType.PREY;
 			}
 		});
-		removePreyButton.addListener(new ChangeListener() {
+		removeAgentsButton.addListener(new ChangeListener() {
 			public void changed (ChangeEvent event, Actor actor) {
 				agents.clear();
 			}
@@ -130,7 +146,7 @@ public class Swarm extends ApplicationAdapter{
 
 			public void touchDragged(InputEvent event, float x, float y, int pointer){
 				//ugly slider hax
-				if (y<30)return;
+				if (y<60)return;
 
 				float dX = (float)(x-dragX)/(float)Gdx.graphics.getWidth();
 				float dY = (float)(dragY-y)/(float)Gdx.graphics.getHeight();
