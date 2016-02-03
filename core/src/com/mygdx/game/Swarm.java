@@ -151,19 +151,26 @@ public class Swarm extends ApplicationAdapter implements InputProcessor{
 //			}
 		});
 
+
+
 		stage.addListener(new DragListener(){
 
 			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button){
 				if (button == Input.Buttons.RIGHT){
+					dragX = x;
+					dragY = y;
 					return true;
 				}
 				return false;
 			}
 
 			public void touchDragged(InputEvent event, float x, float y, int pointer){
-				System.out.println(event.getButton());
-				System.out.println(x);
-				System.out.println(y);
+				float dX = (float)(x-dragX)/(float)Gdx.graphics.getWidth();
+				float dY = (float)(dragY-y)/(float)Gdx.graphics.getHeight();
+				dragX = x;
+				dragY = y;
+				cam.position.add(-dX * 1000f, dY * 1000f, 0f);
+				cam.update();
 			}
 
 		});
@@ -178,6 +185,10 @@ public class Swarm extends ApplicationAdapter implements InputProcessor{
 
 
 	}
+	private float dragX, dragY;
+	Vector3 tp = new Vector3();
+	float oldMouseX = 0;
+	float oldMouseY = 0;
 
 	@Override
 	public void render () {
@@ -228,7 +239,6 @@ public class Swarm extends ApplicationAdapter implements InputProcessor{
 
 	}
 
-	Vector3 tp = new Vector3();
 	boolean rightButtonHold;
 	@Override
 	public boolean mouseMoved(int screenX, int screenY) {
@@ -298,8 +308,6 @@ public class Swarm extends ApplicationAdapter implements InputProcessor{
 		return false;
 	}
 
-	float oldMouseX = 0;
-	float oldMouseY = 0;
 	@Override
 	public boolean touchDragged(int screenX, int screenY, int pointer) {
 		if (rightButtonHold){
