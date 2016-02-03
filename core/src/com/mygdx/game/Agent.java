@@ -3,6 +3,7 @@ package com.mygdx.game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Vector2;
 
 import java.util.ArrayList;
@@ -49,12 +50,30 @@ public class Agent extends Sprite{
 
     private void avoidObstacles(Vector2 newDir) {
         for (Obstacle o: obstacles){
-            Vector2 avoidVector = new Vector2((this.getCenterX()-o.getX()),this.getCenterY()-o.getY());
-            float length = (float) ((o.getRadius()+50)-avoidVector.len());
-            if (length > 0){
-                avoidVector.setLength((float) (Math.pow(length,2)/400));
-                newDir.add(avoidVector);
-            }
+            Vector2 avoidVector = new Vector2((o.getX()-this.getCenterX()),o.getY()-this.getCenterY());
+            float angle = newDir.angle(avoidVector);
+            //System.out.println("angle: "+angle);
+            Vector2 startPos = new Vector2(getCenterX(), getCenterY());
+            Vector2 offset = newDir.cpy();
+            offset.setLength(o.getRadius()+150);
+            Vector2 endPos = new Vector2(getCenterX()+offset.x, getCenterY()+offset.y);
+            float te = Intersector.intersectSegmentCircleDisplace(startPos,endPos,new Vector2(o.getX(),o.getY()),o.getRadius(),avoidVector);
+            System.out.println("te "+te);
+//            if (avoidVector.len()<o.getRadius()+100){
+//                if (angle>0){
+//                    avoidVector.rotate(-90);
+//                }else if (angle<=0){
+//                    avoidVector.rotate(90);
+//                }
+//
+//                avoidVector.setLength(o.getRadius());
+//                newDir.add(avoidVector);
+//            }
+//            float length = (float) ((o.getRadius()+50)-avoidVector.len());
+//            if (length > 0){
+//                avoidVector.setLength((float) (Math.pow(length,2)/400));
+//                newDir.add(avoidVector);
+//            }
         }
     }
 
