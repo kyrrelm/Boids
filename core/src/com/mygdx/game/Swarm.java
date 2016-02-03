@@ -10,9 +10,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -168,6 +166,14 @@ public class Swarm extends ApplicationAdapter implements InputProcessor{
 				System.out.println(y);
 			}
 
+		});
+
+		stage.addListener(new InputListener() {
+			@Override
+			public boolean scrolled(InputEvent event, float x, float y, int amount){
+				cam.zoom += (float)amount/5;
+				return true;
+			}
 		});
 
 
