@@ -93,6 +93,8 @@ public class Swarm extends ApplicationAdapter implements InputProcessor{
 		final TextButton button = new TextButton("Click me!", skin);
 		table.add(button);
 
+		table.right().bottom();
+
 		button.addListener(new ChangeListener() {
 			public void changed (ChangeEvent event, Actor actor) {
 				System.out.println("Clicked! Is checked: " + button.isChecked());
@@ -100,24 +102,13 @@ public class Swarm extends ApplicationAdapter implements InputProcessor{
 			}
 		});
 
-		// Add an image actor. Have to set the size, else it would be the size of the drawable (which is the 1x1 texture).
-		table.add(new Image(skin.newDrawable("white", Color.RED))).size(64);
-
-
-
 		stage.addListener(new ClickListener(){
 			@Override
 			public void clicked(InputEvent event, float screenX, float screenY) {
 				System.out.println(event);
 
-				System.out.println("X: "+screenX);
-				System.out.println("Y: "+screenY);
 				Vector3 tp2 = new Vector3();
 				cam.unproject(tp2.set(screenX, Gdx.graphics.getHeight()-screenY, 0));
-				System.out.println("TP X:" + tp2.x);
-				System.out.println("TP Y:" + tp2.y);
-				System.out.println("Button X:" + preyButton.getX());
-				System.out.println("Button Y:" + preyButton.getY());
 
 				if(preyButton.getBoundingRectangle().contains(screenX, Gdx.graphics.getHeight()-screenY)) {
 					selectedButton = ButtonType.PREY;
@@ -137,7 +128,7 @@ public class Swarm extends ApplicationAdapter implements InputProcessor{
 						break;
 					}
 					case OBSTACLE:{
-						obstacles.add(new Obstacle(tp2.x, tp2.y, (float)(10+(30*Math.random()))));
+						obstacles.add(new Obstacle(tp2.x, tp2.y, 20));
 						break;
 					}
 				}
