@@ -18,7 +18,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
 
 import java.util.ArrayList;
 
-public class Swarm extends ApplicationAdapter implements InputProcessor{
+public class Swarm extends ApplicationAdapter{
 	SpriteBatch batch;
 	SpriteBatch hudBatch;
 	ArrayList<Agent> agents;
@@ -27,12 +27,13 @@ public class Swarm extends ApplicationAdapter implements InputProcessor{
 	static final int WIDTH = 2000;
 	static final int HEIGHT = 2000;
 	ShapeRenderer shapeRenderer;
-	Sprite preyButton;
-	Sprite clearAgentButton;
-	Sprite obstacleButton;
-	Sprite clearObstacleButton;
 	Skin skin;
 	Stage stage;
+	private float dragX, dragY;
+	private ButtonType selectedButton = ButtonType.OBSTACLE;
+	private enum ButtonType {
+		PREY, OBSTACLE
+	}
 
 	@Override
 	public void create () {
@@ -50,13 +51,11 @@ public class Swarm extends ApplicationAdapter implements InputProcessor{
 		}
 
 		stage = new Stage();
-
 		Gdx.input.setInputProcessor(stage);
+		skin = new Skin(Gdx.files.internal("data/uiskin32.json"));
 
-		//skin = new Skin(Gdx.files.internal("data/uiskin32.json"));
 
-
-		skin = new Skin();
+		//skin = new Skin();
 
 		// Generate a 1x1 white texture and store it in the skin named "white".
 		Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
@@ -82,25 +81,34 @@ public class Swarm extends ApplicationAdapter implements InputProcessor{
 		stage.addActor(table);
 
 		// Create a button with the "default" TextButtonStyle. A 3rd parameter can be used to specify a name other than "default".
-		final TextButton preyButton = new TextButton("Prey", skin);
+		final TextButton preyButton = new TextButton(" Prey ", skin);
 		table.add(preyButton);
-		final TextButton obstacleButton = new TextButton("Obstacle", skin);
+		final TextButton removePreyButton = new TextButton(" Remove agents ", skin);
+		table.add(removePreyButton);
+		final TextButton obstacleButton = new TextButton(" Obstacle ", skin);
 		table.add(obstacleButton);
-
-
+		final TextButton removeObstacleButton = new TextButton(" Remove obstacle ", skin);
+		table.add(removeObstacleButton);
 		table.right().bottom();
 
 		preyButton.addListener(new ChangeListener() {
 			public void changed (ChangeEvent event, Actor actor) {
 				selectedButton = ButtonType.PREY;
-				//button.setText("Good job!");
 			}
 		});
-
+		removePreyButton.addListener(new ChangeListener() {
+			public void changed (ChangeEvent event, Actor actor) {
+				agents.clear();
+			}
+		});
 		obstacleButton.addListener(new ChangeListener() {
 			public void changed (ChangeEvent event, Actor actor) {
 				selectedButton = ButtonType.OBSTACLE;
-				//button.setText("Good job!");
+			}
+		});
+		removeObstacleButton.addListener(new ChangeListener() {
+			public void changed (ChangeEvent event, Actor actor) {
+				obstacles.clear();
 			}
 		});
 
@@ -134,23 +142,10 @@ public class Swarm extends ApplicationAdapter implements InputProcessor{
 
 			@Override
 			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-				//return super.touchDown(event, x, y, pointer, button);
 				if (button == Input.Buttons.RIGHT){
 					Vector3 tp2 = new Vector3();
 					cam.unproject(tp2.set(x, Gdx.graphics.getHeight()-y, 0));
-//
-//					if(Swarm.this.preyButton.getBoundingRectangle().contains(x, Gdx.graphics.getHeight()-y)) {
-//						selectedButton = ButtonType.PREY;
-//					}
-//					if(clearAgentButton.getBoundingRectangle().contains(x, Gdx.graphics.getHeight()-y)) {
-//						agents.clear();
-//					}
-//					if(obstacleButton.getBoundingRectangle().contains(x, Gdx.graphics.getHeight()-y)) {
-//						selectedButton = ButtonType.OBSTACLE;
-//					}
-//					if(clearObstacleButton.getBoundingRectangle().contains(x, Gdx.graphics.getHeight()-y)) {
-//						obstacles.clear();
-//					}
+
 					switch (selectedButton){
 						case PREY:{
 							agents.add(new Agent(tp2.x, tp2.y, agents, obstacles));
@@ -168,10 +163,6 @@ public class Swarm extends ApplicationAdapter implements InputProcessor{
 
 
 	}
-	private float dragX, dragY;
-	Vector3 tp = new Vector3();
-	float oldMouseX = 0;
-	float oldMouseY = 0;
 
 	@Override
 	public void render () {
@@ -210,120 +201,7 @@ public class Swarm extends ApplicationAdapter implements InputProcessor{
 			a.move();
 			a.draw(batch);
 		}
-
 		batch.end();
-
-//		hudBatch.begin();
-//		preyButton.draw(hudBatch, 1F);
-//		clearAgentButton.draw(hudBatch, 1F);
-//		obstacleButton.draw(hudBatch, 1F);
-//		clearObstacleButton.draw(hudBatch, 1F);
-//		hudBatch.end();
-
-	}
-
-	boolean rightButtonHold;
-	@Override
-	public boolean mouseMoved(int screenX, int screenY) {
-		if (rightButtonHold){
-			System.out.println("x: "+screenX+" y: "+screenY);
-		}
-		return false;
-	}
-
-	private enum ButtonType {
-		PREY, OBSTACLE
-	}
-
-	private ButtonType selectedButton = ButtonType.OBSTACLE;
-
-	@Override
-	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-		if (button == Input.Buttons.LEFT){
-			System.out.println("X: "+screenX);
-			System.out.println("Y: "+screenY);
-			Vector3 tp2 = new Vector3();
-			cam.unproject(tp2.set(screenX, screenY, 0));
-			System.out.println("TP X:" + tp2.x);
-			System.out.println("TP Y:" + tp2.y);
-			System.out.println("Button X:" + preyButton.getX());
-			System.out.println("Button Y:" + preyButton.getY());
-			if(preyButton.getBoundingRectangle().contains(screenX, Gdx.graphics.getHeight()-screenY)) {
-				selectedButton = ButtonType.PREY;
-				return true;
-			}
-			if(clearAgentButton.getBoundingRectangle().contains(screenX, Gdx.graphics.getHeight()-screenY)) {
-				agents.clear();
-				return true;
-			}
-			if(obstacleButton.getBoundingRectangle().contains(screenX, Gdx.graphics.getHeight()-screenY)) {
-				selectedButton = ButtonType.OBSTACLE;
-				return true;
-			}
-			if(clearObstacleButton.getBoundingRectangle().contains(screenX, Gdx.graphics.getHeight()-screenY)) {
-				obstacles.clear();
-				return true;
-			}
-			switch (selectedButton){
-				case PREY:{
-					agents.add(new Agent(tp2.x, tp2.y, agents, obstacles));
-					return true;
-				}
-				case OBSTACLE:{
-					obstacles.add(new Obstacle(tp2.x, tp2.y, (float)(10+(30*Math.random()))));
-					return true;
-				}
-			}
-		}
-		if (button == Input.Buttons.RIGHT){
-			cam.unproject(tp.set(screenX, screenY, 0));
-			oldMouseX = tp.x;
-			oldMouseY = tp.y;
-			rightButtonHold = true;
-			return true;
-		}
-		return false;
-	}
-
-	@Override
-	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-		rightButtonHold = false;
-		return false;
-	}
-
-	@Override
-	public boolean touchDragged(int screenX, int screenY, int pointer) {
-		if (rightButtonHold){
-			cam.unproject(tp.set(screenX, screenY, 0));
-			System.out.println("tp x: "+(oldMouseX-tp.x));
-			System.out.println("tp y: "+(oldMouseY-tp.y));
-			cam.translate(oldMouseX-tp.x, oldMouseY-tp.y, 0);
-			oldMouseX = tp.x;
-			oldMouseY = tp.y;
-		}
-		return false;
-	}
-
-	@Override
-	public boolean scrolled(int amount) {
-		cam.zoom += (float)amount/5;
-		System.out.println("Cam zoom: "+cam.zoom);
-		return false;
-	}
-
-	@Override
-	public boolean keyDown(int keycode) {
-		return false;
-	}
-
-	@Override
-	public boolean keyUp(int keycode) {
-		return false;
-	}
-
-	@Override
-	public boolean keyTyped(char character) {
-		return false;
 	}
 
 	@Override
