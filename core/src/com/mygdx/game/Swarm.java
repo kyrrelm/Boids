@@ -11,9 +11,12 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
 
 import java.util.ArrayList;
 
@@ -50,7 +53,7 @@ public class Swarm extends ApplicationAdapter implements InputProcessor{
 
 		stage = new Stage();
 
-		Gdx.input.setInputProcessor(this);
+		Gdx.input.setInputProcessor(stage);
 		preyButton = new Sprite(new Texture("arrow.png"));
 		preyButton.setPosition(10,10);
 		clearAgentButton = new Sprite(new Texture("arrow.png"));
@@ -101,6 +104,71 @@ public class Swarm extends ApplicationAdapter implements InputProcessor{
 
 		// Add an image actor. Have to set the size, else it would be the size of the drawable (which is the 1x1 texture).
 		table.add(new Image(skin.newDrawable("white", Color.RED))).size(64);
+
+
+
+		stage.addListener(new ClickListener(){
+			@Override
+			public void clicked(InputEvent event, float screenX, float screenY) {
+				System.out.println(event);
+
+				System.out.println("X: "+screenX);
+				System.out.println("Y: "+screenY);
+				Vector3 tp2 = new Vector3();
+				cam.unproject(tp2.set(screenX, Gdx.graphics.getHeight()-screenY, 0));
+				System.out.println("TP X:" + tp2.x);
+				System.out.println("TP Y:" + tp2.y);
+				System.out.println("Button X:" + preyButton.getX());
+				System.out.println("Button Y:" + preyButton.getY());
+
+				if(preyButton.getBoundingRectangle().contains(screenX, Gdx.graphics.getHeight()-screenY)) {
+					selectedButton = ButtonType.PREY;
+				}
+				if(clearAgentButton.getBoundingRectangle().contains(screenX, Gdx.graphics.getHeight()-screenY)) {
+					agents.clear();
+				}
+				if(obstacleButton.getBoundingRectangle().contains(screenX, Gdx.graphics.getHeight()-screenY)) {
+					selectedButton = ButtonType.OBSTACLE;
+				}
+				if(clearObstacleButton.getBoundingRectangle().contains(screenX, Gdx.graphics.getHeight()-screenY)) {
+					obstacles.clear();
+				}
+				switch (selectedButton){
+					case PREY:{
+						agents.add(new Agent(tp2.x, tp2.y, agents, obstacles));
+						break;
+					}
+					case OBSTACLE:{
+						obstacles.add(new Obstacle(tp2.x, tp2.y, (float)(10+(30*Math.random()))));
+						break;
+					}
+				}
+			}
+//			@Override
+//			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button){
+//				System.out.println(event);
+//				System.out.println(x);
+//				System.out.println(y);
+//				return true;
+//			}
+		});
+
+		stage.addListener(new DragListener(){
+
+			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button){
+				if (button == Input.Buttons.RIGHT){
+					return true;
+				}
+				return false;
+			}
+
+			public void touchDragged(InputEvent event, float x, float y, int pointer){
+				System.out.println(event.getButton());
+				System.out.println(x);
+				System.out.println(y);
+			}
+
+		});
 
 
 	}
