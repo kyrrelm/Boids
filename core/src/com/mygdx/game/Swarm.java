@@ -4,14 +4,16 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.*;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 
 import java.util.ArrayList;
 
@@ -28,6 +30,8 @@ public class Swarm extends ApplicationAdapter implements InputProcessor{
 	Sprite clearAgentButton;
 	Sprite obstacleButton;
 	Sprite clearObstacleButton;
+	Skin skin;
+	Stage stage;
 
 	@Override
 	public void create () {
@@ -43,6 +47,9 @@ public class Swarm extends ApplicationAdapter implements InputProcessor{
 		for (int i = 0; i < 10; i++) {
 			//agents.add(new Agent(300, 300+i, agents, obstacles));
 		}
+
+		stage = new Stage();
+
 		Gdx.input.setInputProcessor(this);
 		preyButton = new Sprite(new Texture("arrow.png"));
 		preyButton.setPosition(10,10);
@@ -52,6 +59,50 @@ public class Swarm extends ApplicationAdapter implements InputProcessor{
 		obstacleButton.setPosition(90,10);
 		clearObstacleButton = new Sprite(new Texture("arrow.png"));
 		clearObstacleButton.setPosition(130,10);
+
+		//skin = new Skin(Gdx.files.internal("data/uiskin32.json"));
+
+
+		skin = new Skin();
+
+		// Generate a 1x1 white texture and store it in the skin named "white".
+		Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
+		pixmap.setColor(Color.WHITE);
+		pixmap.fill();
+		skin.add("white", new Texture(pixmap));
+
+		// Store the default libgdx font under the name "default".
+		skin.add("default", new BitmapFont());
+
+		// Configure a TextButtonStyle and name it "default". Skin resources are stored by type, so this doesn't overwrite the font.
+		TextButton.TextButtonStyle textButtonStyle = new TextButton.TextButtonStyle();
+		textButtonStyle.up = skin.newDrawable("white", Color.DARK_GRAY);
+		textButtonStyle.down = skin.newDrawable("white", Color.DARK_GRAY);
+		textButtonStyle.checked = skin.newDrawable("white", Color.BLUE);
+		textButtonStyle.over = skin.newDrawable("white", Color.LIGHT_GRAY);
+		textButtonStyle.font = skin.getFont("default");
+		skin.add("default", textButtonStyle);
+
+		// Create a table that fills the screen. Everything else will go inside this table.
+		Table table = new Table();
+		table.setFillParent(true);
+		stage.addActor(table);
+
+		// Create a button with the "default" TextButtonStyle. A 3rd parameter can be used to specify a name other than "default".
+		final TextButton button = new TextButton("Click me!", skin);
+		table.add(button);
+
+		button.addListener(new ChangeListener() {
+			public void changed (ChangeEvent event, Actor actor) {
+				System.out.println("Clicked! Is checked: " + button.isChecked());
+				button.setText("Good job!");
+			}
+		});
+
+		// Add an image actor. Have to set the size, else it would be the size of the drawable (which is the 1x1 texture).
+		table.add(new Image(skin.newDrawable("white", Color.RED))).size(64);
+
+
 	}
 
 	@Override
@@ -61,6 +112,9 @@ public class Swarm extends ApplicationAdapter implements InputProcessor{
 
 		Gdx.gl.glClearColor(1, 1, 1, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+		stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
+		stage.draw();
 
 		Gdx.gl.glLineWidth(3);
 		shapeRenderer.setProjectionMatrix(cam.combined);
@@ -205,5 +259,16 @@ public class Swarm extends ApplicationAdapter implements InputProcessor{
 	@Override
 	public boolean keyTyped(char character) {
 		return false;
+	}
+
+	@Override
+	public void resize (int width, int height) {
+		stage.getViewport().update(width, height, true);
+	}
+
+	@Override
+	public void dispose () {
+		stage.dispose();
+		skin.dispose();
 	}
 }
