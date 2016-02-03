@@ -97,6 +97,7 @@ public class Swarm extends ApplicationAdapter implements InputProcessor{
 
 		button.addListener(new ChangeListener() {
 			public void changed (ChangeEvent event, Actor actor) {
+				System.out.println("button");
 				System.out.println("Clicked! Is checked: " + button.isChecked());
 				button.setText("Good job!");
 			}
@@ -105,33 +106,9 @@ public class Swarm extends ApplicationAdapter implements InputProcessor{
 		stage.addListener(new ClickListener(){
 			@Override
 			public void clicked(InputEvent event, float screenX, float screenY) {
-				System.out.println(event);
+				System.out.println("derp"+event);
+				System.out.println(event.getButton());
 
-				Vector3 tp2 = new Vector3();
-				cam.unproject(tp2.set(screenX, Gdx.graphics.getHeight()-screenY, 0));
-
-				if(preyButton.getBoundingRectangle().contains(screenX, Gdx.graphics.getHeight()-screenY)) {
-					selectedButton = ButtonType.PREY;
-				}
-				if(clearAgentButton.getBoundingRectangle().contains(screenX, Gdx.graphics.getHeight()-screenY)) {
-					agents.clear();
-				}
-				if(obstacleButton.getBoundingRectangle().contains(screenX, Gdx.graphics.getHeight()-screenY)) {
-					selectedButton = ButtonType.OBSTACLE;
-				}
-				if(clearObstacleButton.getBoundingRectangle().contains(screenX, Gdx.graphics.getHeight()-screenY)) {
-					obstacles.clear();
-				}
-				switch (selectedButton){
-					case PREY:{
-						agents.add(new Agent(tp2.x, tp2.y, agents, obstacles));
-						break;
-					}
-					case OBSTACLE:{
-						obstacles.add(new Obstacle(tp2.x, tp2.y, 20));
-						break;
-					}
-				}
 			}
 //			@Override
 //			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button){
@@ -146,8 +123,9 @@ public class Swarm extends ApplicationAdapter implements InputProcessor{
 
 		stage.addListener(new DragListener(){
 
+
 			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button){
-				if (button == Input.Buttons.RIGHT){
+				if (button == Input.Buttons.LEFT){
 					dragX = x;
 					dragY = y;
 					return true;
@@ -170,6 +148,39 @@ public class Swarm extends ApplicationAdapter implements InputProcessor{
 			@Override
 			public boolean scrolled(InputEvent event, float x, float y, int amount){
 				cam.zoom += (float)amount/5;
+				return true;
+			}
+
+			@Override
+			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+				//return super.touchDown(event, x, y, pointer, button);
+				if (button == Input.Buttons.RIGHT){
+					Vector3 tp2 = new Vector3();
+					cam.unproject(tp2.set(x, Gdx.graphics.getHeight()-y, 0));
+
+					if(preyButton.getBoundingRectangle().contains(x, Gdx.graphics.getHeight()-y)) {
+						selectedButton = ButtonType.PREY;
+					}
+					if(clearAgentButton.getBoundingRectangle().contains(x, Gdx.graphics.getHeight()-y)) {
+						agents.clear();
+					}
+					if(obstacleButton.getBoundingRectangle().contains(x, Gdx.graphics.getHeight()-y)) {
+						selectedButton = ButtonType.OBSTACLE;
+					}
+					if(clearObstacleButton.getBoundingRectangle().contains(x, Gdx.graphics.getHeight()-y)) {
+						obstacles.clear();
+					}
+					switch (selectedButton){
+						case PREY:{
+							agents.add(new Agent(tp2.x, tp2.y, agents, obstacles));
+							break;
+						}
+						case OBSTACLE:{
+							obstacles.add(new Obstacle(tp2.x, tp2.y, 20));
+							break;
+						}
+					}
+				}
 				return true;
 			}
 		});
