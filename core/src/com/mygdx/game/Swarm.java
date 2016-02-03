@@ -81,6 +81,10 @@ public class Swarm extends ApplicationAdapter{
 		stage.addActor(table);
 
 		// Create a button with the "default" TextButtonStyle. A 3rd parameter can be used to specify a name other than "default".
+		final Label separationLabel = new Label("Separation", skin);
+		table.add(separationLabel);
+		final Slider separationSlider = new Slider(0, 500, 5, false, skin);
+		table.add(separationSlider).padRight(5);
 		final TextButton preyButton = new TextButton(" Prey ", skin);
 		table.add(preyButton);
 		final TextButton removePreyButton = new TextButton(" Remove agents ", skin);
@@ -90,6 +94,8 @@ public class Swarm extends ApplicationAdapter{
 		final TextButton removeObstacleButton = new TextButton(" Remove obstacle ", skin);
 		table.add(removeObstacleButton);
 		table.right().bottom();
+
+
 
 		preyButton.addListener(new ChangeListener() {
 			public void changed (ChangeEvent event, Actor actor) {
@@ -123,6 +129,9 @@ public class Swarm extends ApplicationAdapter{
 			}
 
 			public void touchDragged(InputEvent event, float x, float y, int pointer){
+				//ugly slider hax
+				if (y<30)return;
+
 				float dX = (float)(x-dragX)/(float)Gdx.graphics.getWidth();
 				float dY = (float)(dragY-y)/(float)Gdx.graphics.getHeight();
 				dragX = x;
