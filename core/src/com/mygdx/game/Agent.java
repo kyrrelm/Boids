@@ -40,10 +40,10 @@ public class Agent extends Sprite{
         velocity.nor();
         avoidWall();
         newDir = new Vector2(velocity.x, velocity.y);
-        avoidObstacles(newDir);
         if (!interact(newDir)){
             moveRandom(newDir);
         }
+        avoidObstacles(newDir);
         enforceAgilityLimit(newDir);
     }
 
@@ -56,25 +56,6 @@ public class Agent extends Sprite{
                 newDir.add(avoidVector);
             }
         }
-
-        if (getCenterX()<0){
-            //velocity.x += (boarderSize-getCenterX())/500;
-            this.setPosition(Swarm.WIDTH-20, getY());
-        }
-        if(getCenterX()>Swarm.WIDTH){
-            //velocity.x -= (boarderSize-(Swarm.WIDTH-getCenterX()))/500;
-            this.setPosition(-10, getY());
-        }
-        if (getCenterY()<0){
-            //velocity.y += (boarderSize-getCenterY())/500;
-            this.setPosition(getX(), Swarm.HEIGHT-20);
-        }
-        if(getCenterY()>Swarm.HEIGHT){
-            //velocity.y -= (boarderSize-(Swarm.HEIGHT-getCenterY()))/500;
-            this.setPosition(getX(), -10);
-
-        }
-
     }
 
     //TODO: kan flytte moveRandom inn hit
