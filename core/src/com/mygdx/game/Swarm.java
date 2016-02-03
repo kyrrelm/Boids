@@ -52,14 +52,6 @@ public class Swarm extends ApplicationAdapter implements InputProcessor{
 		stage = new Stage();
 
 		Gdx.input.setInputProcessor(stage);
-		preyButton = new Sprite(new Texture("arrow.png"));
-		preyButton.setPosition(10,10);
-		clearAgentButton = new Sprite(new Texture("arrow.png"));
-		clearAgentButton.setPosition(50,10);
-		obstacleButton = new Sprite(new Texture("arrow.png"));
-		obstacleButton.setPosition(90,10);
-		clearObstacleButton = new Sprite(new Texture("arrow.png"));
-		clearObstacleButton.setPosition(130,10);
 
 		//skin = new Skin(Gdx.files.internal("data/uiskin32.json"));
 
@@ -79,7 +71,7 @@ public class Swarm extends ApplicationAdapter implements InputProcessor{
 		TextButton.TextButtonStyle textButtonStyle = new TextButton.TextButtonStyle();
 		textButtonStyle.up = skin.newDrawable("white", Color.DARK_GRAY);
 		textButtonStyle.down = skin.newDrawable("white", Color.DARK_GRAY);
-		textButtonStyle.checked = skin.newDrawable("white", Color.BLUE);
+		//textButtonStyle.checked = skin.newDrawable("white", Color.BLUE);
 		textButtonStyle.over = skin.newDrawable("white", Color.LIGHT_GRAY);
 		textButtonStyle.font = skin.getFont("default");
 		skin.add("default", textButtonStyle);
@@ -90,40 +82,29 @@ public class Swarm extends ApplicationAdapter implements InputProcessor{
 		stage.addActor(table);
 
 		// Create a button with the "default" TextButtonStyle. A 3rd parameter can be used to specify a name other than "default".
-		final TextButton button = new TextButton("Click me!", skin);
-		table.add(button);
+		final TextButton preyButton = new TextButton("Prey", skin);
+		table.add(preyButton);
+		final TextButton obstacleButton = new TextButton("Obstacle", skin);
+		table.add(obstacleButton);
+
 
 		table.right().bottom();
 
-		button.addListener(new ChangeListener() {
+		preyButton.addListener(new ChangeListener() {
 			public void changed (ChangeEvent event, Actor actor) {
-				System.out.println("button");
-				System.out.println("Clicked! Is checked: " + button.isChecked());
-				button.setText("Good job!");
+				selectedButton = ButtonType.PREY;
+				//button.setText("Good job!");
 			}
 		});
 
-		stage.addListener(new ClickListener(){
-			@Override
-			public void clicked(InputEvent event, float screenX, float screenY) {
-				System.out.println("derp"+event);
-				System.out.println(event.getButton());
-
+		obstacleButton.addListener(new ChangeListener() {
+			public void changed (ChangeEvent event, Actor actor) {
+				selectedButton = ButtonType.OBSTACLE;
+				//button.setText("Good job!");
 			}
-//			@Override
-//			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button){
-//				System.out.println(event);
-//				System.out.println(x);
-//				System.out.println(y);
-//				return true;
-//			}
 		});
-
-
 
 		stage.addListener(new DragListener(){
-
-
 			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button){
 				if (button == Input.Buttons.LEFT){
 					dragX = x;
@@ -157,19 +138,19 @@ public class Swarm extends ApplicationAdapter implements InputProcessor{
 				if (button == Input.Buttons.RIGHT){
 					Vector3 tp2 = new Vector3();
 					cam.unproject(tp2.set(x, Gdx.graphics.getHeight()-y, 0));
-
-					if(preyButton.getBoundingRectangle().contains(x, Gdx.graphics.getHeight()-y)) {
-						selectedButton = ButtonType.PREY;
-					}
-					if(clearAgentButton.getBoundingRectangle().contains(x, Gdx.graphics.getHeight()-y)) {
-						agents.clear();
-					}
-					if(obstacleButton.getBoundingRectangle().contains(x, Gdx.graphics.getHeight()-y)) {
-						selectedButton = ButtonType.OBSTACLE;
-					}
-					if(clearObstacleButton.getBoundingRectangle().contains(x, Gdx.graphics.getHeight()-y)) {
-						obstacles.clear();
-					}
+//
+//					if(Swarm.this.preyButton.getBoundingRectangle().contains(x, Gdx.graphics.getHeight()-y)) {
+//						selectedButton = ButtonType.PREY;
+//					}
+//					if(clearAgentButton.getBoundingRectangle().contains(x, Gdx.graphics.getHeight()-y)) {
+//						agents.clear();
+//					}
+//					if(obstacleButton.getBoundingRectangle().contains(x, Gdx.graphics.getHeight()-y)) {
+//						selectedButton = ButtonType.OBSTACLE;
+//					}
+//					if(clearObstacleButton.getBoundingRectangle().contains(x, Gdx.graphics.getHeight()-y)) {
+//						obstacles.clear();
+//					}
 					switch (selectedButton){
 						case PREY:{
 							agents.add(new Agent(tp2.x, tp2.y, agents, obstacles));
@@ -232,12 +213,12 @@ public class Swarm extends ApplicationAdapter implements InputProcessor{
 
 		batch.end();
 
-		hudBatch.begin();
-		preyButton.draw(hudBatch, 1F);
-		clearAgentButton.draw(hudBatch, 1F);
-		obstacleButton.draw(hudBatch, 1F);
-		clearObstacleButton.draw(hudBatch, 1F);
-		hudBatch.end();
+//		hudBatch.begin();
+//		preyButton.draw(hudBatch, 1F);
+//		clearAgentButton.draw(hudBatch, 1F);
+//		obstacleButton.draw(hudBatch, 1F);
+//		clearObstacleButton.draw(hudBatch, 1F);
+//		hudBatch.end();
 
 	}
 
