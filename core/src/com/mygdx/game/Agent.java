@@ -152,12 +152,12 @@ public class Agent extends Sprite{
         return align;
     }
 
-
+    public static float separationWeight = 2f;
     private boolean avoidCollision(Vector2 newDir, Agent a) {
         Vector2 avoidVector = new Vector2((this.getCenterX()-a.getCenterX()),this.getCenterY()-a.getCenterY());
         boolean avoid = false;
         if (avoidVector.len() < 30){
-            avoidVector.setLength(2);
+            avoidVector.setLength(separationWeight);
             newDir.add(avoidVector);
             avoid = true;
         }
