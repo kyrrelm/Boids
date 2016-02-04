@@ -113,7 +113,8 @@ public class Swarm extends ApplicationAdapter{
 		row2.add(alignmentSlider).padRight(5);
 		final Label cohesionLabel = new Label("Cohesion", skin);
 		row2.add(cohesionLabel);
-		final Slider cohesionSlider = new Slider(0, 500, 5, false, skin);
+		final Slider cohesionSlider = new Slider(0, 0.05f, 0.001f, false, skin);
+		cohesionSlider.setValue(Agent.cohesionWeight);
 		row2.add(cohesionSlider).padRight(5);
 		table.add(row2);
 
@@ -163,8 +164,19 @@ public class Swarm extends ApplicationAdapter{
 			public void changed(ChangeEvent event, Actor actor)
 			{
 				float value = ((Slider)actor).getValue();
-				System.out.println(value);
 				Agent.alignmentWeight = value;
+
+			}
+
+		});
+		cohesionSlider.addListener(new ChangeListener()
+		{
+			@Override
+			public void changed(ChangeEvent event, Actor actor)
+			{
+				float value = ((Slider)actor).getValue();
+				System.out.println(value);
+				Agent.cohesionWeight = value;
 
 			}
 
