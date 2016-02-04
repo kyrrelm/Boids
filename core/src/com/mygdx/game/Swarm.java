@@ -177,7 +177,7 @@ public class Swarm extends ApplicationAdapter{
 							break;
 						}
 						case OBSTACLE:{
-							obstacles.add(new Obstacle(tp2.x, tp2.y, 40));
+							obstacles.add(new Obstacle(tp2.x, tp2.y, 20));
 							break;
 						}
 					}
