@@ -114,7 +114,7 @@ public class Swarm extends ApplicationAdapter{
 		final Slider alignmentSlider = new Slider(0, 0.5f, 0.001f, false, skin);
 		alignmentSlider.setValue(Agent.alignmentWeight);
 		row2.add(alignmentSlider).padRight(5);
-		
+
 		final Label cohesionLabel = new Label("Cohesion", skin);
 		row2.add(cohesionLabel);
 		final Slider cohesionSlider = new Slider(0, 0.05f, 0.001f, false, skin);

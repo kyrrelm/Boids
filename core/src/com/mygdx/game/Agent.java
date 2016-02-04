@@ -135,6 +135,7 @@ public class Agent extends Sprite{
         if (distVector.len() < 300 && angleDif > -90 && angleDif < 90){
             distVector.setLength(cohesionWeight);
             newDir.add(distVector);
+
             cohesion = true;
         }
         return cohesion;
@@ -147,6 +148,7 @@ public class Agent extends Sprite{
             Vector2 tmp = new Vector2(a.getVelocity().x, a.getVelocity().y);
             tmp.setLength(alignmentWeight);
             newDir.add(tmp);
+            newDir.nor();
             //align = true;
         }
         return align;
