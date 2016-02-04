@@ -31,7 +31,7 @@ public class Swarm extends ApplicationAdapter{
 	Skin skin;
 	Stage stage;
 	private float dragX, dragY;
-	private ButtonType selectedButton = ButtonType.OBSTACLE;
+	private ButtonType selectedButton = ButtonType.PREY;
 	private enum ButtonType {
 		PREY, PREDATOR, OBSTACLE
 	}
@@ -89,15 +89,17 @@ public class Swarm extends ApplicationAdapter{
 		Table row1 = new Table();
 		// Create a button with the "default" TextButtonStyle. A 3rd parameter can be used to specify a name other than "default".
 		final TextButton preyButton = new TextButton(" Prey ", skin);
-		row1.add(preyButton);
+		row1.add(preyButton).padRight(2);
+		final TextButton removePreyButton = new TextButton(" Remove prey ", skin);
+		row1.add(removePreyButton).padRight(2);
 		final TextButton predatorButton = new TextButton(" Predator ", skin);
-		row1.add(predatorButton);
-		final TextButton removeAgentsButton = new TextButton(" Remove agents ", skin);
-		row1.add(removeAgentsButton);
+		row1.add(predatorButton).padRight(2);
+		final TextButton removePredatorButton = new TextButton(" Remove predator ", skin);
+		row1.add(removePredatorButton).padRight(2);
 		final TextButton obstacleButton = new TextButton(" Obstacle ", skin);
-		row1.add(obstacleButton);
+		row1.add(obstacleButton).padRight(2);
 		final TextButton removeObstacleButton = new TextButton(" Remove obstacle ", skin);
-		row1.add(removeObstacleButton);
+		row1.add(removeObstacleButton).padRight(2);
 		table.add(row1).left().row();
 
 		Table row2 = new Table();
@@ -126,9 +128,22 @@ public class Swarm extends ApplicationAdapter{
 				selectedButton = ButtonType.PREDATOR;
 			}
 		});
-		removeAgentsButton.addListener(new ChangeListener() {
+		removePreyButton.addListener(new ChangeListener() {
 			public void changed (ChangeEvent event, Actor actor) {
-				agents.clear();
+				for (int i = 0; i < agents.size(); i++) {
+					if (!(agents.get(i) instanceof Predator)){
+						agents.remove(i--);
+					}
+				}
+			}
+		});
+		removePredatorButton.addListener(new ChangeListener() {
+			public void changed (ChangeEvent event, Actor actor) {
+				for (int i = 0; i < agents.size(); i++) {
+					if (agents.get(i) instanceof Predator){
+						agents.remove(i--);
+					}
+				}
 			}
 		});
 		obstacleButton.addListener(new ChangeListener() {
