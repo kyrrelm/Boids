@@ -15,6 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
+import com.sun.javafx.binding.StringFormatter;
 import javafx.scene.control.Tab;
 
 import java.util.ArrayList;
@@ -107,11 +108,13 @@ public class Swarm extends ApplicationAdapter{
 		final Slider separationSlider = new Slider(0, 10, 0.3f, false, skin);
 		separationSlider.setValue(Agent.separationWeight);
 		row2.add(separationSlider).padRight(5);
+
 		final Label alignmentLabel = new Label("Alignment", skin);
 		row2.add(alignmentLabel);
 		final Slider alignmentSlider = new Slider(0, 0.5f, 0.001f, false, skin);
 		alignmentSlider.setValue(Agent.alignmentWeight);
 		row2.add(alignmentSlider).padRight(5);
+		
 		final Label cohesionLabel = new Label("Cohesion", skin);
 		row2.add(cohesionLabel);
 		final Slider cohesionSlider = new Slider(0, 0.05f, 0.001f, false, skin);
