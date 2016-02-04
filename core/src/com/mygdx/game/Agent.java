@@ -91,8 +91,7 @@ public class Agent extends Sprite{
                 }
             }else {
                 if (this instanceof Predator){
-                    //chase();
-                    if (cohesion(newDir, a)){
+                    if (chase(newDir, a)){
                         interacting = true;
                     }
                 }else {
@@ -106,11 +105,26 @@ public class Agent extends Sprite{
     }
 
     private void flee(Vector2 newDir, Agent predator) {
-        Vector2 fleeVector = new Vector2(this.getCenterX()-predator.getCenterX(),this.getCenterY()-predator.getCenterX());
+        Vector2 fleeVector = new Vector2(this.getCenterX()-predator.getCenterX(),this.getCenterY()-predator.getCenterY());
         if (fleeVector.len() < 200){
             fleeVector.setLength(20);
             newDir.add(fleeVector);
+            for (int i = 0; i < 10; i++){
+                moveRandom(newDir);
+            }
         }
+    }
+
+    private boolean chase(Vector2 newDir, Agent a){
+        Vector2 distVector = new Vector2((a.getCenterX()-this.getCenterX()),a.getCenterY()-this.getCenterY());
+        boolean chasing = false;
+        float angleDif = velocity.angle(distVector);
+        if (distVector.len() < 300){
+            distVector.setLength(20);
+            newDir.add(distVector);
+            chasing = true;
+        }
+        return chasing;
     }
 
     private boolean cohesion(Vector2 newDir, Agent a){
