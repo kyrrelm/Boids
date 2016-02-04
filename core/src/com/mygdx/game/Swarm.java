@@ -51,6 +51,10 @@ public class Swarm extends ApplicationAdapter{
 			//agents.add(new Agent(300, 300+i, agents, obstacles));
 		}
 
+		agents.add(new Predator(300, 300, agents, obstacles));
+		agents.add(new Predator(300, 400, agents, obstacles));
+		agents.add(new Predator(300, 500, agents, obstacles));
+
 		stage = new Stage();
 		Gdx.input.setInputProcessor(stage);
 		skin = new Skin(Gdx.files.internal("data/uiskin32.json"));
