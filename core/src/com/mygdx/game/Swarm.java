@@ -75,7 +75,6 @@ public class Swarm extends ApplicationAdapter{
 		TextButton.TextButtonStyle textButtonStyle = new TextButton.TextButtonStyle();
 		textButtonStyle.up = skin.newDrawable("white", Color.DARK_GRAY);
 		textButtonStyle.down = skin.newDrawable("white", Color.DARK_GRAY);
-		//textButtonStyle.checked = skin.newDrawable("white", Color.BLUE);
 		textButtonStyle.over = skin.newDrawable("white", Color.LIGHT_GRAY);
 		textButtonStyle.font = skin.getFont("default");
 		skin.add("default", textButtonStyle);
@@ -109,9 +108,10 @@ public class Swarm extends ApplicationAdapter{
 		row2.add(separationSlider).padRight(5);
 		final Label alignmentLabel = new Label("Alignment", skin);
 		row2.add(alignmentLabel);
-		final Slider alignmentSlider = new Slider(0, 500, 5, false, skin);
+		final Slider alignmentSlider = new Slider(0, 0.5f, 0.001f, false, skin);
+		alignmentSlider.setValue(Agent.alignmentWeight);
 		row2.add(alignmentSlider).padRight(5);
-		final Label cohesionLabel = new Label("Separation", skin);
+		final Label cohesionLabel = new Label("Cohesion", skin);
 		row2.add(cohesionLabel);
 		final Slider cohesionSlider = new Slider(0, 500, 5, false, skin);
 		row2.add(cohesionSlider).padRight(5);
@@ -155,6 +155,19 @@ public class Swarm extends ApplicationAdapter{
 			public void changed (ChangeEvent event, Actor actor) {
 				obstacles.clear();
 			}
+		});
+
+		alignmentSlider.addListener(new ChangeListener()
+		{
+			@Override
+			public void changed(ChangeEvent event, Actor actor)
+			{
+				float value = ((Slider)actor).getValue();
+				System.out.println(value);
+				Agent.alignmentWeight = value;
+
+			}
+
 		});
 
 		stage.addListener(new DragListener(){

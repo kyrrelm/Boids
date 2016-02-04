@@ -127,29 +127,31 @@ public class Agent extends Sprite{
         return chasing;
     }
 
+    public static float cohesionWeight = 0.003f;
     private boolean cohesion(Vector2 newDir, Agent a){
         Vector2 distVector = new Vector2((a.getCenterX()-this.getCenterX()),a.getCenterY()-this.getCenterY());
         boolean cohesion = false;
         float angleDif = velocity.angle(distVector);
         if (distVector.len() < 300 && angleDif > -90 && angleDif < 90){
-            distVector.setLength((float) 0.003);
+            distVector.setLength(cohesionWeight);
             newDir.add(distVector);
             cohesion = true;
         }
         return cohesion;
     }
-
+    public static float alignmentWeight = 0.05f;
     private boolean alignment(Vector2 newDir, Agent a) {
         Vector2 distVector = new Vector2((this.getCenterX()-a.getCenterX()),this.getCenterY()-a.getCenterY());
         boolean align = false;
         if (distVector.len() < 50){
             Vector2 tmp = new Vector2(a.getVelocity().x, a.getVelocity().y);
-            tmp.setLength((float) 0.05);
+            tmp.setLength(alignmentWeight);
             newDir.add(tmp);
             //align = true;
         }
         return align;
     }
+
 
     private boolean avoidCollision(Vector2 newDir, Agent a) {
         Vector2 avoidVector = new Vector2((this.getCenterX()-a.getCenterX()),this.getCenterY()-a.getCenterY());
