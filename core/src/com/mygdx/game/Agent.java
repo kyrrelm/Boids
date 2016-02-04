@@ -56,7 +56,7 @@ public class Agent extends Sprite{
         for (Obstacle o: obstacles){
             Vector2 avoidVector = new Vector2((o.getX()-this.getCenterX()),o.getY()-this.getCenterY());
             float angle = newDir.angle(avoidVector);
-            if (angle<120 && angle>-120 && avoidVector.len()<o.getRadius()*3){
+            if (angle<100 && angle>-100 && avoidVector.len()<o.getRadius()*3){
                 Vector2 startPos = new Vector2(getCenterX(), getCenterY());
                 Vector2 offset = newDir.cpy();
                 offset.setLength(o.getRadius()+500);
@@ -77,15 +77,32 @@ public class Agent extends Sprite{
 
     //TODO: kan flytte moveRandom inn hit
     private boolean interact(Vector2 newDir) {
-        boolean moveRandom = false;
+        boolean interacting = false;
         for (Agent a: agents){
             if (a.equals(this))
                 continue;
-            if (avoidCollision(newDir, a) || alignment(newDir, a) || cohesion(newDir, a)){
-                moveRandom = true;
+            if (a instanceof Predator){
+                if (this instanceof Predator){
+                    if (avoidCollision(newDir, a)){
+                        interacting = true;
+                    }
+                }else {
+                    //flee();
+                }
+            }else {
+                if (this instanceof Predator){
+                    //chase();
+                    if (cohesion(newDir, a)){
+                        interacting = true;
+                    }
+                }else {
+                    if (avoidCollision(newDir, a) || alignment(newDir, a) || cohesion(newDir, a)){
+                        interacting = true;
+                    }
+                }
             }
         }
-        return moveRandom;
+        return interacting;
     }
 
     private boolean cohesion(Vector2 newDir, Agent a){
