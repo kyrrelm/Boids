@@ -87,7 +87,7 @@ public class Agent extends Sprite{
                         interacting = true;
                     }
                 }else {
-                    //flee();
+                    flee(newDir, a);
                 }
             }else {
                 if (this instanceof Predator){
@@ -103,6 +103,14 @@ public class Agent extends Sprite{
             }
         }
         return interacting;
+    }
+
+    private void flee(Vector2 newDir, Agent predator) {
+        Vector2 fleeVector = new Vector2(this.getCenterX()-predator.getCenterX(),this.getCenterY()-predator.getCenterX());
+        if (fleeVector.len() < 200){
+            fleeVector.setLength(20);
+            newDir.add(fleeVector);
+        }
     }
 
     private boolean cohesion(Vector2 newDir, Agent a){

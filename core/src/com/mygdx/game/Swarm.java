@@ -33,7 +33,7 @@ public class Swarm extends ApplicationAdapter{
 	private float dragX, dragY;
 	private ButtonType selectedButton = ButtonType.OBSTACLE;
 	private enum ButtonType {
-		PREY, OBSTACLE
+		PREY, PREDATOR, OBSTACLE
 	}
 
 	@Override
@@ -89,13 +89,12 @@ public class Swarm extends ApplicationAdapter{
 		Table row1 = new Table();
 		// Create a button with the "default" TextButtonStyle. A 3rd parameter can be used to specify a name other than "default".
 		final TextButton preyButton = new TextButton(" Prey ", skin);
-		//table.add(preyButton);
 		row1.add(preyButton);
+		final TextButton predatorButton = new TextButton(" Predator ", skin);
+		row1.add(predatorButton);
 		final TextButton removeAgentsButton = new TextButton(" Remove agents ", skin);
-		//.add(removeAgentsButton);
 		row1.add(removeAgentsButton);
 		final TextButton obstacleButton = new TextButton(" Obstacle ", skin);
-		//table.add(obstacleButton);
 		row1.add(obstacleButton);
 		final TextButton removeObstacleButton = new TextButton(" Remove obstacle ", skin);
 		row1.add(removeObstacleButton);
@@ -120,6 +119,11 @@ public class Swarm extends ApplicationAdapter{
 		preyButton.addListener(new ChangeListener() {
 			public void changed (ChangeEvent event, Actor actor) {
 				selectedButton = ButtonType.PREY;
+			}
+		});
+		predatorButton.addListener(new ChangeListener() {
+			public void changed (ChangeEvent event, Actor actor) {
+				selectedButton = ButtonType.PREDATOR;
 			}
 		});
 		removeAgentsButton.addListener(new ChangeListener() {
@@ -178,6 +182,10 @@ public class Swarm extends ApplicationAdapter{
 					switch (selectedButton){
 						case PREY:{
 							agents.add(new Agent(tp2.x, tp2.y, agents, obstacles));
+							break;
+						}
+						case PREDATOR:{
+							agents.add(new Predator(tp2.x, tp2.y, agents, obstacles));
 							break;
 						}
 						case OBSTACLE:{
