@@ -42,19 +42,17 @@ public class Swarm extends ApplicationAdapter{
 		float w = Gdx.graphics.getWidth();
 		float h = Gdx.graphics.getHeight();
 		cam = new OrthographicCamera(800, 800*(h/w));
-		cam.position.set(300, 300, 0);
+		cam.zoom = 3;
+		cam.position.set(1000, 1000, 0);
 		cam.update();
 		shapeRenderer = new ShapeRenderer();
 		batch = new SpriteBatch();
 		hudBatch = new SpriteBatch();
 		agents = new ArrayList<Agent>();
-		for (int i = 0; i < 10; i++) {
-			//agents.add(new Agent(300, 300+i, agents, obstacles));
+		for (int i = 0; i < 100; i++) {
+			agents.add(new Agent(1000, 500+i*5, agents, obstacles));
 		}
 
-		agents.add(new Predator(300, 300, agents, obstacles));
-		agents.add(new Predator(300, 400, agents, obstacles));
-		agents.add(new Predator(300, 500, agents, obstacles));
 
 		stage = new Stage();
 		Gdx.input.setInputProcessor(stage);
